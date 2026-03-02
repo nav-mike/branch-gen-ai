@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Branch Gen",
+  "version": "1.0",
+
+  "description": "Generate a branch name from the Linear url following the GitFlow convention.",
+
+  "icons": {
+    "48": "icons/branch-gen-48.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.linear.app/*"],
+      "js": ["branchgen.js"]
+    }
+  ]
+}
