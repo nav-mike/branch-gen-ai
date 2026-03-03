@@ -3,19 +3,21 @@ const saveOptions = (e) => {
 
   browser.storage.sync.set({
     apikey: document.getElementById("apikey").value,
+    model: document.getElementById("model").value,
   });
 };
 
 const restoreOptions = () => {
   const setCurrentChoice = (result) => {
     document.getElementById("apikey").value = result.apikey || "";
+    document.getElementById("model").value = result.model || "";
   };
 
   const onError = (error) => {
     console.error("Error... ", error);
   };
 
-  const getting = browser.storage.sync.get("apikey");
+  const getting = browser.storage.sync.get(["apikey", "model"]);
   getting.then(setCurrentChoice, onError);
 };
 
