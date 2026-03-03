@@ -9,10 +9,36 @@
     "48": "icons/branch-gen-48.png"
   },
 
+  "permissions": [
+    "activeTab",
+    "storage",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+
+  "background": {
+    "scripts": ["branchgen.js"]
+  },
+
+  "browser_action": {
+    "default_icon": "icons/branch-gen-32.png",
+    "default_title": "Brnach Generator",
+    "default_popup": "popup/choose_beast.html"
+  },
+
   "content_scripts": [
     {
       "matches": ["*://*.linear.app/*"],
-      "js": ["branchgen.js"]
+      "js": ["content_scripts/branchgen.js"]
     }
-  ]
+  ],
+
+  "options_ui": {
+    "page": "options/options.html"
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@branch-gen"
+    }
+  }
 }
