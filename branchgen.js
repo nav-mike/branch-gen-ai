@@ -1,4 +1,43 @@
-document.body.style.border = "5px solid red";
+const typeKeywords = {
+  fix: ["fix", "bug", "hotfix", "patch", "resolve", "issue"],
+  feature: ["add", "feature", "implement", "new", "create"],
+  refactor: ["refactor", "improve", "optimize", "cleanup"],
+  test: ["test", "testing", "unit test", "integration test"],
+  docs: ["docs", "document", "readme"],
+  chore: ["update", "upgrade", "bump", "dependency"],
+};
+
+class NoAiBranch {
+  constructor(title) {
+    this.title = title;
+  }
+
+  json() {
+    return new Promise(this.#generateBranch());
+  }
+
+  #generateBranch() {
+    const titleLower = this.title.toLowerCase();
+    let branchType = "feature";
+
+    for (const [type, keywords] of Object.entries(typeKeywords)) {
+      if (keywords.some((kw) => titleLower.includes(kw))) {
+        branchType = type;
+        break;
+      }
+    }
+
+    const description = titleLower
+      .replace(/^(fix|feature|refactor|test|docs|chore)[:\s-]*/i, "")
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .replace(0, 50);
+
+    return `${branchType}/${description}`;
+  }
+}
 
 const geminiUrl = (apikey, model) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apikey}`;
