@@ -10,10 +10,23 @@ const typeKeywords = {
 class NoAiBranch {
   constructor(title) {
     this.title = title;
+    this.ok = true;
   }
 
   json() {
-    return new Promise(this.#generateBranch());
+    return new Promise({
+      candidates: [
+        {
+          content: {
+            parts: [
+              {
+                text: this.#generateBranch(),
+              },
+            ],
+          },
+        },
+      ],
+    });
   }
 
   #generateBranch() {
