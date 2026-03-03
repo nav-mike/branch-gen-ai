@@ -1,7 +1,7 @@
 document.body.style.border = "5px solid red";
 
-const geminiUrl = (apikey) =>
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apikey}`;
+const geminiUrl = (apikey, model) =>
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apikey}`;
 
 const processWithGemini = async (title) => {
   const requestBody = {
@@ -40,24 +40,24 @@ const processWithGemini = async (title) => {
   };
 
   return browser.storage.sync
-    .get("apikey")
+    .get(["apikey", "model"])
     .then((result) => {
-      return result.apikey;
+      return result;
     })
-    .then((apikey) => {
-      return fetch(geminiUrl(apikey), {
+    .then(({ apikey, model }) => {
+      return fetch(geminiUrl(apikey, model), {
         method: "POST",
         headers: { ContentType: "application/json" },
         body: JSON.stringify(requestBody),
-      })
-        .then((response) => {
-          if (!response.ok) throw new Error(`API Error: ${response.status}`);
+      });
+    })
+    .then((response) => {
+      if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
-          return response.json();
-        })
-        .then((result) => {
-          return result.candidates[0].content.parts[0].text;
-        });
+      return response.json();
+    })
+    .then((result) => {
+      return result.candidates[0].content.parts[0].text;
     });
 };
 
