@@ -1,3 +1,19 @@
+const fetchWithTimeout = async (resource, options = {}) => {
+  const { timeout = 8_000 } = options;
+  const controller = new AbortController();
+
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  const response = await fetch(resource, {
+    ...options,
+    signal: controller.signal,
+  });
+
+  clearTimeout(id);
+
+  return response;
+};
+
 const typeKeywords = {
   fix: ["fix", "bug", "hotfix", "patch", "resolve", "issue"],
   feature: ["add", "feature", "implement", "new", "create"],
@@ -97,10 +113,11 @@ const processWithGemini = async (title) => {
       return result;
     })
     .then(({ apikey, model }) => {
-      return fetch(geminiUrl(apikey, model), {
+      return fetchWithTimeout(geminiUrl(apikey, model), {
         method: "POST",
         headers: { ContentType: "application/json" },
         body: JSON.stringify(requestBody),
+        timeout: 6_000,
       });
     })
     .then((response) => {
